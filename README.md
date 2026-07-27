@@ -10,7 +10,14 @@ Free and open-source iPhone location teleport. Tap the map, search a place, or d
 - Draw a path or import / export GPX
 - Background keep-alive + live status bar + drop alerts
 - Favorites & recents
+- First-run setup walkthrough
 - Fully on-device — no analytics, nothing uploaded
+
+## Install
+
+See [SETUP.md](SETUP.md). Grab a prebuilt IPA from [Releases](https://github.com/ChrisMack32/Locus/releases), or build from source below.
+
+Bundle ID: `com.chrismack.locus`
 
 ## How it works
 
