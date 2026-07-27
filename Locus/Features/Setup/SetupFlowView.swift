@@ -81,23 +81,20 @@ struct SetupFlowView: View {
                 withAnimation { step = .vpn }
             }
         }
-        .fileImporter(
-            isPresented: $showImporter,
-            allowedContentTypes: PairingStore.supportedTypes,
-            allowsMultipleSelection: false
-        ) { result in
-            switch result {
-            case .success(let urls):
-                guard let url = urls.first else { return }
-                do {
-                    try pairing.importPairing(from: url)
-                    withAnimation { step = .vpn }
-                } catch {
-                    session.lastError = error.localizedDescription
-                }
-            case .failure(let error):
-                session.lastError = error.localizedDescription
-            }
+        .sheet(isPresented: $showImporter) {
+            PairingDocumentPicker(
+                onPick: { url in
+                    showImporter = false
+                    do {
+                        try pairing.importPairing(from: url)
+                        withAnimation { step = .vpn }
+                    } catch {
+                        session.lastError = error.localizedDescription
+                    }
+                },
+                onCancel: { showImporter = false }
+            )
+            .ignoresSafeArea()
         }
         .alert("Locus", isPresented: Binding(
             get: { session.lastError != nil },
@@ -245,8 +242,27 @@ struct SetupFlowView: View {
                 importPairingCard
                     .padding(.horizontal, 24)
                 Spacer()
-                primaryButton("Import pairing file") {
-                    showImporter = true
+                VStack(spacing: 12) {
+                    primaryButton("Import pairing file") {
+                        showImporter = true
+                    }
+                    Button {
+                        do {
+                            try pairing.importPairingFromClipboard()
+                            withAnimation { step = .vpn }
+                        } catch {
+                            session.lastError = error.localizedDescription
+                        }
+                    } label: {
+                        Text("Paste from clipboard")
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .locusGlass(.interactive, in: Capsule())
+                            .contentShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 28)
@@ -257,8 +273,8 @@ struct SetupFlowView: View {
     private var importPairingCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             stepRow(1, "On a Mac, run idevice_pair and create an RPPairing file.")
-            stepRow(2, "AirDrop it to this iPhone, or tap Import below.")
-            stepRow(3, "Open the file in Locus — setup continues automatically.")
+            stepRow(2, "AirDrop / Share into Locus, or copy the plist text.")
+            stepRow(3, "Tap Import, or Paste from clipboard if the picker doesn’t work (LiveContainer).")
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)

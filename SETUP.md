@@ -2,9 +2,17 @@
 
 ## 1. Sideload the IPA
 
-Install the latest `Locus-1.0.0.ipa` from [Releases](https://github.com/ChrisMack32/Locus/releases) (or build from source) with Feather, SideStore, AltStore, or Sideloadly.
+Install the latest IPA from [Releases](https://github.com/ChrisMack32/Locus/releases) (or build from source) with Feather, SideStore, AltStore, Sideloadly, or LiveContainer.
 
 Bundle ID: `com.chrismack.locus`
+
+### LiveContainer
+
+File pickers often break inside LiveContainer. Do one of the following:
+
+1. Long-press **Locus** in LiveContainer → **Settings** → enable **Fix File Picker**, then try Import again.
+2. Share / open the pairing file **into LiveContainer → Locus** (iOS share sheet).
+3. Copy the RPPairing plist contents, open Locus → **Paste RPPairing from clipboard** (setup or Settings).
 
 ## 2. Pairing
 
@@ -23,7 +31,7 @@ Bundle ID: `com.chrismack.locus`
 1. On a computer, download [idevice_pair](https://github.com/jkcoxson/idevice_pair/releases).
 2. Plug in your iPhone, unlock, Trust.
 3. Generate an **RPPairing** file (not lockdown / SideStore `.mobiledevicepairing`).
-4. AirDrop → Open in **Locus**, or Settings → Import RPPairing file.
+4. AirDrop / Share → Open in **Locus**, **Import**, or **Paste from clipboard**.
 
 ## 3. LocalDevVPN
 

@@ -22,9 +22,17 @@ Free and open-source iPhone location teleport. Tap the map, search a place, or d
 
 ## Install
 
-See [SETUP.md](SETUP.md). Grab a prebuilt IPA from [Releases](https://github.com/ChrisMack32/Locus/releases), or build from source below.
+See [SETUP.md](SETUP.md) for full steps. Grab a prebuilt IPA from [Releases](https://github.com/ChrisMack32/Locus/releases), or build from source below.
 
 Bundle ID: `com.chrismack.locus`
+
+### LiveContainer
+
+File pickers often don’t work inside LiveContainer. Use one of these:
+
+1. Long-press **Locus** → **Settings** → enable **Fix File Picker**, then try Import again.
+2. Share the pairing file **into LiveContainer → Locus**.
+3. Copy the RPPairing plist contents → in Locus use **Paste RPPairing from clipboard** (setup or Settings).
 
 ## How it works
 

@@ -44,6 +44,13 @@ struct SettingsView: View {
                     }
 
                     Button("Import RPPairing file…") { showImporter = true }
+                    Button("Paste RPPairing from clipboard") {
+                        do {
+                            try pairing.importPairingFromClipboard()
+                        } catch {
+                            session.lastError = error.localizedDescription
+                        }
+                    }
                     if pairing.hasPairingFile {
                         Button("Remove pairing file", role: .destructive) {
                             try? pairing.removePairing()
@@ -53,8 +60,8 @@ struct SettingsView: View {
                     Text("Developer pairing")
                 } footer: {
                     Text(supportsOnDevicePairing
-                         ? "On iOS 27, use Pair on this iPhone — no computer. Locus advertises a pairable host; confirm the 6-digit code under Settings › Privacy & Security › Developer Mode › Pair with Host. On older iOS, import an RPPairing file from idevice_pair instead (not a SideStore lockdown .mobiledevicepairing)."
-                         : "This iOS build doesn’t expose device-initiated pairing yet. Import an RPPairing file from idevice_pair (not a SideStore lockdown .mobiledevicepairing).")
+                         ? "On iOS 27, use Pair on this iPhone — no computer. Locus advertises a pairable host; confirm the 6-digit code under Settings › Privacy & Security › Developer Mode › Pair with Host. On older iOS, import an RPPairing file from idevice_pair (not a SideStore lockdown .mobiledevicepairing). LiveContainer: enable Fix File Picker on Locus, or use Paste / Share → LiveContainer → Locus."
+                         : "Import an RPPairing file from idevice_pair (not a SideStore lockdown .mobiledevicepairing). If the file picker fails (common in LiveContainer), enable Fix File Picker on the app, share the file into LiveContainer → Locus, or copy the plist and use Paste.")
                 }
 
                 Section {
@@ -128,23 +135,20 @@ struct SettingsView: View {
                     }
                 }
             }
-            .fileImporter(
-                isPresented: $showImporter,
-                allowedContentTypes: PairingStore.supportedTypes,
-                allowsMultipleSelection: false
-            ) { result in
-                switch result {
-                case .success(let urls):
-                    guard let url = urls.first else { return }
+            .sheet(isPresented: $showImporter) {
+            PairingDocumentPicker(
+                onPick: { url in
+                    showImporter = false
                     do {
                         try pairing.importPairing(from: url)
                     } catch {
                         session.lastError = error.localizedDescription
                     }
-                case .failure(let error):
-                    session.lastError = error.localizedDescription
-                }
-            }
+                },
+                onCancel: { showImporter = false }
+            )
+            .ignoresSafeArea()
+        }
             .sheet(isPresented: $showPairOnDevice) {
                 PairOnDeviceView()
                     .environmentObject(pairing)
