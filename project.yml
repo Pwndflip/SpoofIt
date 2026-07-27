@@ -11,7 +11,8 @@ options:
       file: true
 settings:
   base:
-    DEVELOPMENT_TEAM: P8868Z72M3
+    # Set your Apple Developer Team ID to build from source (see README).
+    DEVELOPMENT_TEAM: ""
     SWIFT_VERSION: "5.0"
     TARGETED_DEVICE_FAMILY: "1,2"
     IPHONEOS_DEPLOYMENT_TARGET: "18.0"
@@ -37,7 +38,7 @@ targets:
         INFOPLIST_FILE: Locus/Resources/Info.plist
         CODE_SIGN_ENTITLEMENTS: Locus/Resources/Locus.entitlements
         CODE_SIGN_STYLE: Automatic
-        DEVELOPMENT_TEAM: P8868Z72M3
+        DEVELOPMENT_TEAM: ""
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: false
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks"

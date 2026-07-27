@@ -40,14 +40,21 @@ Start a teleport on Wi‑Fi first; the session can keep working on cellular afte
 
 ## Build
 
+Building from source needs an Apple Developer account (free or paid) for code signing. The published IPA does **not** — just sideload it.
+
+1. Install [XcodeGen](https://github.com/yonaskolb/XcodeGen) if needed: `brew install xcodegen`
+2. Set your **Team ID** in `project.yml` (`DEVELOPMENT_TEAM`), *or* pick your team under Xcode → Signing & Capabilities after generating the project.
+3. Generate and open:
+
 ```bash
 xcodegen generate
 open Locus.xcodeproj
 ```
 
-Or:
+Or build from the CLI (replace with your Team ID from [developer.apple.com/account](https://developer.apple.com/account) → Membership):
 
 ```bash
+xcodegen generate
 xcodebuild -project Locus.xcodeproj -scheme Locus -configuration Release \
   -destination 'generic/platform=iOS' DEVELOPMENT_TEAM=YOUR_TEAM_ID build
 ```
