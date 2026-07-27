@@ -46,6 +46,16 @@ Also install **[LocalDevVPN](https://apps.apple.com/us/app/localdevvpn/id6755608
 
 Start a teleport on Wi‑Fi first; the session can keep working on cellular afterward.
 
+### Pokémon GO & similar games
+
+Locus spoofs location the same way Xcode’s developer tools do: it tells iOS “you’re here,” and other apps read that from the system. Apps that just trust GPS (Apple Maps, etc.) will follow it.
+
+**Pokémon GO is different.** It runs its own location checks and often rejects developer / simulated GPS (e.g. “Failed to detect location”). That’s expected with this method, not a Locus bug, and there’s no supported fix for it in this app.
+
+Tools like **iPogo** (and similar modified clients such as SpooferPro) work differently: they’re a **modified Pokémon GO app**, not a system-wide location spoof. Features live *inside* that altered game client, instead of feeding coordinates through iOS for every app. Locus never patches or replaces Pokémon GO; it only changes what the system reports. So those tools can appear to “work in Pokémon GO” while Locus correctly drives Maps but still gets blocked by Pokémon GO’s checks.
+
+Locus is for system-level teleporting. It isn’t a Pokémon GO client or an anti-cheat bypass.
+
 ## Build
 
 Building from source needs an Apple Developer account (free or paid) for code signing. The published IPA does **not** — just sideload it.
