@@ -164,7 +164,7 @@ struct SetupFlowView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Step \(step.rawValue + 1) of \(Step.allCases.count)")
+        .accessibilityLabel("Schritt \(step.rawValue + 1) von \(Step.allCases.count)")
     }
 
     // MARK: - Welcome
@@ -186,7 +186,7 @@ struct SetupFlowView: View {
                         .font(.system(size: 48, weight: .bold, design: .rounded))
                         .tracking(-0.5)
 
-                    Text("Your location, your way.\nBuilt for Emir.")
+                    Text("Dein Standort, dein Weg.\nGemacht für Emir.")
                         .font(.title3)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -200,11 +200,11 @@ struct SetupFlowView: View {
             Spacer()
 
             VStack(spacing: 14) {
-                Text("A short setup — about two minutes.")
+                Text("Eine kurze Einrichtung — etwa zwei Minuten.")
                     .font(.subheadline)
                     .foregroundStyle(.tertiary)
 
-                primaryButton("Get started") {
+                primaryButton("Los geht’s") {
                     SetupGate.markInProgress()
                     withAnimation { step = .pairing }
                 }
@@ -220,11 +220,11 @@ struct SetupFlowView: View {
     private var pairingPage: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Connect this iPhone")
+                Text("Dieses iPhone verbinden")
                     .font(.title.weight(.bold))
                 Text(supportsOnDevicePairing
-                     ? "SpoofIt! needs a one-time pairing so it can set your location. You’ll confirm a short code in Settings."
-                     : "Import a pairing file from your computer — SpoofIt! uses it to set your location securely on this device.")
+                     ? "SpoofIt! benötigt eine einmalige Kopplung, um deinen Standort zu setzen. Du bestätigst dazu einen kurzen Code in den Einstellungen."
+                     : "Importiere eine Pairing-Datei von deinem Computer — SpoofIt! verwendet sie, um deinen Standort sicher auf diesem Gerät zu setzen.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -243,7 +243,7 @@ struct SetupFlowView: View {
                     .padding(.horizontal, 24)
                 Spacer()
                 VStack(spacing: 12) {
-                    primaryButton("Import pairing file") {
+                        primaryButton("Pairing-Datei importieren") {
                         showImporter = true
                     }
                     Button {
@@ -254,7 +254,7 @@ struct SetupFlowView: View {
                             session.lastError = error.localizedDescription
                         }
                     } label: {
-                        Text("Paste from clipboard")
+                        Text("Aus Zwischenablage einfügen")
                             .font(.headline)
                             .foregroundStyle(.primary)
                             .frame(maxWidth: .infinity)
@@ -272,9 +272,9 @@ struct SetupFlowView: View {
 
     private var importPairingCard: some View {
         VStack(alignment: .leading, spacing: 14) {
-            stepRow(1, "On a Mac, run idevice_pair and create an RPPairing file.")
-            stepRow(2, "AirDrop / Share into Locus, or copy the plist text.")
-            stepRow(3, "Tap Import, or Paste from clipboard if the picker doesn’t work (LiveContainer).")
+            stepRow(1, "Führe auf einem Mac idevice_pair aus und erstelle eine RPPairing-Datei.")
+            stepRow(2, "Per AirDrop / Teilen an Locus senden oder den Plist-Text kopieren.")
+            stepRow(3, "Tippe auf Importieren oder füge aus der Zwischenablage ein, falls die Dateiauswahl nicht funktioniert (LiveContainer).")
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -307,12 +307,12 @@ struct SetupFlowView: View {
                     .foregroundStyle(LocusTheme.accent)
 
                 VStack(spacing: 10) {
-                    Text(localDevVPNInstalled ? "Connect LocalDevVPN" : "One more app")
+                    Text(localDevVPNInstalled ? "LocalDevVPN verbinden" : "Noch eine App")
                         .font(.title.weight(.bold))
 
                     Text(localDevVPNInstalled
-                         ? "LocalDevVPN is installed. Open it to turn on the private tunnel Locus needs, then come back here."
-                         : "LocalDevVPN creates a private tunnel Locus uses to talk to your phone’s location system. Install it, turn it on, then you’re ready to teleport.")
+                         ? "LocalDevVPN ist installiert. Öffne die App, um den privaten Tunnel für Locus zu aktivieren, und kehre dann hierher zurück."
+                         : "LocalDevVPN erstellt einen privaten Tunnel, über den Locus mit dem Ortungssystem deines iPhones kommuniziert. Installiere die App, aktiviere sie und schon kannst du teleportieren.")
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -321,13 +321,13 @@ struct SetupFlowView: View {
 
                 VStack(alignment: .leading, spacing: 12) {
                     if localDevVPNInstalled {
-                        tipRow(systemImage: "checkmark.circle.fill", title: "Installed", detail: "LocalDevVPN is on this iPhone.")
-                        tipRow(systemImage: "power.circle.fill", title: "Connect", detail: "Tap below to open it and start the tunnel. You’ll bounce back to Locus.")
+                        tipRow(systemImage: "checkmark.circle.fill", title: "Installiert", detail: "LocalDevVPN ist auf diesem iPhone installiert.")
+                        tipRow(systemImage: "power.circle.fill", title: "Verbinden", detail: "Tippe unten, um die App zu öffnen und den Tunnel zu starten. Danach kehrst du zu Locus zurück.")
                     } else {
-                        tipRow(systemImage: "arrow.down.app.fill", title: "Install", detail: "Get LocalDevVPN from the App Store.")
-                        tipRow(systemImage: "power.circle.fill", title: "Connect", detail: "Open it and turn the VPN on. Leave the default IP alone.")
+                        tipRow(systemImage: "arrow.down.app.fill", title: "Installieren", detail: "Lade LocalDevVPN aus dem App Store.")
+                        tipRow(systemImage: "power.circle.fill", title: "Verbinden", detail: "Öffne die App und schalte das VPN ein. Lass die Standard-IP unverändert.")
                     }
-                    tipRow(systemImage: "wifi", title: "First teleport on Wi‑Fi", detail: "Start your first teleport while on Wi‑Fi. After that, it can keep working on cellular.")
+                    tipRow(systemImage: "wifi", title: "Erster Teleport im WLAN", detail: "Starte den ersten Teleport im WLAN. Danach kann er auch über Mobilfunk weiterlaufen.")
                 }
                 .padding(18)
                 .locusGlass(.regular, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
@@ -346,7 +346,7 @@ struct SetupFlowView: View {
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: localDevVPNInstalled ? "lock.shield.fill" : "apple.logo")
-                        Text(localDevVPNInstalled ? "Open LocalDevVPN" : "Get LocalDevVPN")
+                        Text(localDevVPNInstalled ? "LocalDevVPN öffnen" : "LocalDevVPN laden")
                             .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
@@ -357,7 +357,7 @@ struct SetupFlowView: View {
                 }
                 .buttonStyle(.plain)
 
-                primaryButton("I’ve connected it — continue") {
+                primaryButton("Ich habe es verbunden — weiter") {
                     onFinished()
                 }
             }

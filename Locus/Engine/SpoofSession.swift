@@ -11,10 +11,10 @@ enum TravelMode: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .walk: return "Walk"
-        case .run: return "Run"
-        case .cycle: return "Cycle"
-        case .drive: return "Drive"
+        case .walk: return "Gehen"
+        case .run: return "Laufen"
+        case .cycle: return "Radfahren"
+        case .drive: return "Fahren"
         }
     }
 
@@ -54,11 +54,11 @@ enum SpoofStatus: Equatable {
 
     var label: String {
         switch self {
-        case .idle: return "Not Spoofing"
-        case .connecting: return "Starting…"
-        case .active: return "Spoofing"
-        case .reconnecting: return "Reconnecting…"
-        case .dropped: return "Interrupted"
+        case .idle: return "Kein Spoof aktiv"
+        case .connecting: return "Starte …"
+        case .active: return "Spoofing aktiv"
+        case .reconnecting: return "Verbinde erneut …"
+        case .dropped: return "Unterbrochen"
         }
     }
 
@@ -106,7 +106,7 @@ final class SpoofSession: ObservableObject {
 
     func teleport(to coordinate: CLLocationCoordinate2D, pairing: PairingStore) {
         guard pairing.hasPairingFile else {
-            lastError = "Import an RPPairing file in Settings first."
+            lastError = "Importiere zuerst eine RPPairing-Datei in den Einstellungen."
             return
         }
         pin = coordinate
@@ -149,12 +149,12 @@ final class SpoofSession: ObservableObject {
 
     func startJoystick(pairing: PairingStore) {
         guard pairing.hasPairingFile else {
-            lastError = "Import an RPPairing file in Settings first."
+            lastError = "Importiere zuerst eine RPPairing-Datei in den Einstellungen."
             return
         }
         let start = simulated ?? pin ?? locationKeeper.lastKnownCoordinate
         guard let start else {
-            lastError = "Drop a pin or teleport somewhere before using the joystick."
+            lastError = "Setze einen Pin oder teleportiere dich zuerst an einen Ort, bevor du den Joystick verwendest."
             return
         }
         if simulated == nil {

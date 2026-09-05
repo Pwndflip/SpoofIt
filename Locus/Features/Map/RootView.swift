@@ -54,13 +54,13 @@ struct StatusBarView: View {
         case .idle:
             return tunnelConnected ? .notSpoofing : .connectVPN
         case .connecting:
-            return .status("Connecting…")
+            return .status("Verbinde …")
         case .active:
-            return .status("Spoofing")
+            return .status("Spoofing aktiv")
         case .reconnecting:
-            return .status("Reconnecting…")
+            return .status("Verbinde erneut …")
         case .dropped(let reason):
-            return .status(reason.isEmpty ? "Disconnected" : "Disconnected — \(reason)")
+            return .status(reason.isEmpty ? "Getrennt" : "Getrennt — \(reason)")
         }
     }
 
@@ -82,8 +82,8 @@ struct StatusBarView: View {
 
     private var title: String {
         switch display {
-        case .notSpoofing: return "Not Spoofing"
-        case .connectVPN: return "Connect LocalDevVPN"
+        case .notSpoofing: return "Kein Spoof aktiv"
+        case .connectVPN: return "LocalDevVPN verbinden"
         case .status(let text): return text
         }
     }
@@ -206,7 +206,7 @@ struct BottomControlsView: View {
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "dot.circle.and.hand.point.up.left.fill")
-                        Text(session.joystickActive ? "On" : "Joy")
+                        Text(session.joystickActive ? "An" : "Joystick")
                             .lineLimit(1)
                     }
                     .font(.subheadline.weight(.semibold))
@@ -224,7 +224,7 @@ struct BottomControlsView: View {
                     Button {
                         session.stop(pairing: pairing)
                     } label: {
-                        Text("Stop")
+                        Text("Stopp")
                             .font(.subheadline.weight(.bold))
                             .foregroundStyle(.white)
                             .frame(minWidth: 72)
@@ -237,7 +237,7 @@ struct BottomControlsView: View {
                 } else {
                     Button {
                         guard let pin = session.pin else {
-                            session.lastError = "Choose a location or tap the map to set a pin first."
+                            session.lastError = "Wähle einen Ort aus oder tippe zuerst auf die Karte, um einen Pin zu setzen."
                             return
                         }
                         session.teleport(to: pin, pairing: pairing)

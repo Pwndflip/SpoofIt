@@ -29,7 +29,7 @@ struct SettingsView: View {
             List {
                 Section {
                     Label {
-                        Text(pairing.hasPairingFile ? "RPPairing file installed" : "No pairing file")
+                        Text(pairing.hasPairingFile ? "RPPairing-Datei installiert" : "Keine Pairing-Datei")
                     } icon: {
                         Image(systemName: pairing.hasPairingFile ? "checkmark.seal.fill" : "exclamationmark.triangle.fill")
                             .foregroundStyle(pairing.hasPairingFile ? LocusTheme.statusGood : LocusTheme.statusWarn)
@@ -39,12 +39,12 @@ struct SettingsView: View {
                         Button {
                             showPairOnDevice = true
                         } label: {
-                            Label("Pair on this iPhone", systemImage: "iphone.gen3.radiowaves.left.and.right")
+                            Label("Auf diesem iPhone koppeln", systemImage: "iphone.gen3.radiowaves.left.and.right")
                         }
                     }
 
-                    Button("Import RPPairing file…") { showImporter = true }
-                    Button("Paste RPPairing from clipboard") {
+                    Button("RPPairing-Datei importieren …") { showImporter = true }
+                    Button("RPPairing aus Zwischenablage einfügen") {
                         do {
                             try pairing.importPairingFromClipboard()
                         } catch {
@@ -52,30 +52,30 @@ struct SettingsView: View {
                         }
                     }
                     if pairing.hasPairingFile {
-                        Button("Remove pairing file", role: .destructive) {
+                        Button("Pairing-Datei entfernen", role: .destructive) {
                             try? pairing.removePairing()
                         }
                     }
                 } header: {
-                    Text("Developer pairing")
+                    Text("Entwickler-Kopplung")
                 } footer: {
                     Text(supportsOnDevicePairing
-                         ? "On iOS 27, use Pair on this iPhone — no computer. SpoofIt! advertises a pairable host; confirm the 6-digit code under Settings › Privacy & Security › Developer Mode › Pair with Host. On older iOS, import an RPPairing file from idevice_pair."
-                         : "Import an RPPairing file from idevice_pair. If the file picker fails, enable Fix File Picker on the app, share the file into LiveContainer → SpoofIt!, or copy the plist and use Paste.")
+                         ? "Unter iOS 27 kannst du auf diesem iPhone koppeln — ohne Computer. SpoofIt! stellt einen koppelbaren Host bereit. Bestätige den 6-stelligen Code unter Einstellungen › Datenschutz & Sicherheit › Entwicklermodus › Mit Host koppeln. Unter älteren iOS-Versionen importierst du eine RPPairing-Datei von idevice_pair."
+                         : "Importiere eine RPPairing-Datei von idevice_pair. Falls der Dateiauswahldialog nicht funktioniert, aktiviere Fix File Picker in der App, teile die Datei mit LiveContainer → SpoofIt! oder kopiere den Plist-Text und füge ihn ein.")
                 }
 
                 Section {
-                    TextField("Device tunnel IP", text: $tunnelIP)
+                    TextField("IP des Gerätetunnels", text: $tunnelIP)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .onSubmit {
                             TunnelConfig.setTargetIP(tunnelIP)
                         }
                     LabeledContent("Status") {
-                        Text(LocalDevVPN.isConnected ? "Connected" : "Not connected")
+                        Text(LocalDevVPN.isConnected ? "Verbunden" : "Nicht verbunden")
                             .foregroundStyle(LocalDevVPN.isConnected ? LocusTheme.statusGood : LocusTheme.statusWarn)
                     }
-                    Button("Save tunnel IP") {
+                    Button("Tunnel-IP speichern") {
                         TunnelConfig.setTargetIP(tunnelIP)
                     }
                     Button {
@@ -86,26 +86,26 @@ struct SettingsView: View {
                         }
                     } label: {
                         Label(
-                            localDevVPNInstalled ? "Open LocalDevVPN" : "Get LocalDevVPN (App Store)",
+                            localDevVPNInstalled ? "LocalDevVPN öffnen" : "LocalDevVPN laden (App Store)",
                             systemImage: localDevVPNInstalled ? "lock.shield.fill" : "arrow.down.app.fill"
                         )
                     }
                 } header: {
                     Text("Tunnel")
                 } footer: {
-                    Text("Connect LocalDevVPN before teleporting. Default tunnel IP is 10.7.0.1. Start a spoof on Wi‑Fi first; it can keep working on cellular afterward.")
+                    Text("Verbinde LocalDevVPN vor dem Teleportieren. Die Standard-Tunnel-IP ist 10.7.0.1. Starte den ersten Spoof im WLAN; danach kann er auch über Mobilfunk weiterlaufen.")
                 }
 
-                Section("Privacy") {
-                    Text("Fully on-device. Favorites and recents stay in UserDefaults. No analytics, no accounts, nothing uploaded.")
+                Section("Datenschutz") {
+                    Text("Alles bleibt auf dem Gerät. Favoriten und zuletzt verwendete Orte bleiben in UserDefaults. Keine Analyse, keine Konten, kein Upload.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
 
-                Section("About") {
+                Section("Über") {
                     LabeledContent("Version", value: appVersion)
-                    LabeledContent("Engine", value: "idevice DVT location simulation")
-                        Text("SpoofIt! is made for Emir. It is free and open source (MIT), with location injection powered by the idevice FFI.")
+                    LabeledContent("Engine", value: "idevice-DVT-Ortssimulation")
+                        Text("SpoofIt! wurde für Emir gemacht. Die App ist kostenlos und Open Source (MIT); die Standortsimulation wird vom idevice-FFI bereitgestellt.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -114,7 +114,7 @@ struct SettingsView: View {
                     Button {
                         showNameEasterEgg = true
                     } label: {
-                        Text("locus, n. — a place. From the Latin for where you are.")
+                        Text("locus, Substantiv — ein Ort. Aus dem Lateinischen für „wo du bist“.")
                             .font(.footnote.italic())
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -124,12 +124,21 @@ struct SettingsView: View {
                     .buttonStyle(.plain)
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
+
+                    Text("Gemacht von Emir, für leute wie Emir.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 8)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                 }
             }
-            .navigationTitle("Settings")
+            .navigationTitle("Einstellungen")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") {
+                    Button("Fertig") {
                         TunnelConfig.setTargetIP(tunnelIP)
                         dismiss()
                     }
@@ -179,9 +188,9 @@ struct PlacesView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Favorites") {
+                Section("Favoriten") {
                     if session.favorites.isEmpty {
-                        Text("Star a pin from the map to save it.")
+                        Text("Markiere einen Pin auf der Karte, um ihn zu speichern.")
                             .foregroundStyle(.secondary)
                     }
                     ForEach(session.favorites) { place in
@@ -190,22 +199,22 @@ struct PlacesView: View {
                                 Button(role: .destructive) {
                                     session.removeFavorite(place)
                                 } label: {
-                                    Label("Delete", systemImage: "trash.fill")
+                                    Label("Löschen", systemImage: "trash.fill")
                                 }
                                 Button {
                                     placeToRename = place
                                     renameText = place.name
                                 } label: {
-                                    Label("Rename", systemImage: "pencil")
+                                    Label("Umbenennen", systemImage: "pencil")
                                 }
                                 .tint(.gray)
                             }
                     }
                 }
 
-                Section("Recents") {
+                Section("Zuletzt verwendet") {
                     if session.recents.isEmpty {
-                        Text("Teleports show up here.")
+                        Text("Teleportierte Orte erscheinen hier.")
                             .foregroundStyle(.secondary)
                     }
                     ForEach(session.recents) { place in
@@ -214,34 +223,34 @@ struct PlacesView: View {
                                 Button(role: .destructive) {
                                     session.removeRecent(place)
                                 } label: {
-                                    Label("Delete", systemImage: "trash.fill")
+                                    Label("Löschen", systemImage: "trash.fill")
                                 }
                             }
                     }
                 }
             }
-            .navigationTitle("Places")
+            .navigationTitle("Orte")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") { dismiss() }
+                    Button("Fertig") { dismiss() }
                 }
             }
-            .alert("Rename Favorite", isPresented: Binding(
+            .alert("Favorit umbenennen", isPresented: Binding(
                 get: { placeToRename != nil },
                 set: { if !$0 { placeToRename = nil } }
             )) {
                 TextField("Name", text: $renameText)
-                Button("Cancel", role: .cancel) {
+                Button("Abbrechen", role: .cancel) {
                     placeToRename = nil
                 }
-                Button("Save") {
+                Button("Speichern") {
                     if let place = placeToRename {
                         session.renameFavorite(place, to: renameText)
                     }
                     placeToRename = nil
                 }
             } message: {
-                Text("Choose a name you’ll recognize later.")
+                Text("Wähle einen Namen, den du später wiedererkennst.")
             }
         }
     }

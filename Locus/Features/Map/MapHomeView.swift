@@ -186,7 +186,7 @@ struct MapHomeView: View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
-            TextField("Search places", text: $searchText)
+            TextField("Orte suchen", text: $searchText)
                 .textInputAutocapitalization(.words)
                 .focused($searchFocused)
                 .submitLabel(.search)
@@ -206,10 +206,10 @@ struct MapHomeView: View {
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Clear and dismiss keyboard")
+                .accessibilityLabel("Eingabe löschen und Tastatur schließen")
             }
             if searchFocused {
-                Button("Done") {
+                Button("Fertig") {
                     searchFocused = false
                 }
                 .font(.subheadline.weight(.semibold))
@@ -289,7 +289,7 @@ struct MapHomeView: View {
         .locusGlass(.interactive, in: Circle())
         .foregroundStyle(.primary)
         .contentShape(Circle())
-        .accessibilityLabel("Current location")
+        .accessibilityLabel("Aktueller Standort")
     }
 
     /// Centers on the spoofed fix while spoofing, otherwise the real GPS —
@@ -357,7 +357,7 @@ struct MapHomeView: View {
     private func buildRoadRoute() {
         guard let start = routeStart ?? session.simulated ?? session.pin,
               let end = routeEnd else {
-            session.lastError = "Set a route start and end."
+            session.lastError = "Lege einen Routenstart und ein Routenende fest."
             return
         }
         isRouting = true
@@ -380,7 +380,7 @@ struct MapHomeView: View {
     private func playRoute() {
         let path = routeCoords.isEmpty ? drawnPath : routeCoords
         guard path.count >= 2 else {
-            session.lastError = "Build or draw a route first."
+            session.lastError = "Erstelle oder zeichne zuerst eine Route."
             return
         }
         showRouteSheet = false
@@ -403,7 +403,7 @@ struct MapHomeView: View {
     private func exportGPX() {
         let path = routeCoords.isEmpty ? drawnPath : routeCoords
         guard !path.isEmpty else {
-            session.lastError = "Nothing to export."
+            session.lastError = "Es gibt nichts zu exportieren."
             return
         }
         let gpx = GPXCodec.export(path)

@@ -119,9 +119,9 @@ enum PairingImportError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .emptyClipboard:
-            return "Clipboard is empty. Copy your RPPairing plist text (or the file), then try Paste again."
+            return "Die Zwischenablage ist leer. Kopiere den RPPairing-Plist-Text (oder die Datei) und versuche es erneut."
         case .invalidContents:
-            return "That doesn’t look like an RPPairing plist. Copy the full pairing file contents and try again."
+            return "Das sieht nicht nach einer RPPairing-Plist-Datei aus. Kopiere den vollständigen Inhalt der Pairing-Datei und versuche es erneut."
         }
     }
 }
