@@ -7,11 +7,14 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
-    
+    runs-on: macos-26
+
     steps:
     - name: Code auschecken
       uses: actions/checkout@v4
+
+    - name: Xcode 26 auswählen
+      run: sudo xcode-select -s /Applications/Xcode_26.6.app
 
     - name: XcodeGen installieren
       run: brew install xcodegen
@@ -21,10 +24,6 @@ jobs:
 
     - name: Xcode Projekt generieren
       run: xcodegen generate
-
-    - name: Xcode Projekt-Format auf Version 56 (Xcode 15) forcieren
-      run: |
-        sed -i '' 's/objectVersion = 77;/objectVersion = 56;/g' SpoofIt.xcodeproj/project.pbxproj
 
     - name: App kompilieren (.app)
       run: |
