@@ -1,20 +1,23 @@
 name: SpoofIt
+objectVersion: 56
+
 options:
   bundleIdPrefix: com.emir
   deploymentTarget:
     iOS: "16.0"
   xcodeVersion: "15.4"
-  objectVersion: 56
   createIntermediateGroups: true
   fileTypes:
     icon:
       file: true
+
 settings:
   base:
     DEVELOPMENT_TEAM: ""
     SWIFT_VERSION: "5.0"
     TARGETED_DEVICE_FAMILY: "1,2"
     IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+
 targets:
   SpoofIt:
     type: application
