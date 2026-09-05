@@ -2,8 +2,8 @@ name: SpoofIt
 options:
   bundleIdPrefix: com.emir
   deploymentTarget:
-    iOS: "18.0"
-  xcodeVersion: "16.0"
+    iOS: "16.0"
+  xcodeVersion: "15.0"
   createIntermediateGroups: true
   fileTypes:
     icon:
