@@ -96,7 +96,7 @@ struct SetupFlowView: View {
             )
             .ignoresSafeArea()
         }
-        .alert("Locus", isPresented: Binding(
+        .alert("SpoofIt!", isPresented: Binding(
             get: { session.lastError != nil },
             set: { if !$0 { session.lastError = nil } }
         )) {
@@ -182,11 +182,11 @@ struct SetupFlowView: View {
                     .scaleEffect(appear ? 1 : 0.85)
 
                 VStack(spacing: 10) {
-                    Text("Locus")
+                    Text("SpoofIt!")
                         .font(.system(size: 48, weight: .bold, design: .rounded))
                         .tracking(-0.5)
 
-                    Text("Teleport your location.\nNo computer required.")
+                    Text("Your location, your way.\nBuilt for Emir.")
                         .font(.title3)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -223,8 +223,8 @@ struct SetupFlowView: View {
                 Text("Connect this iPhone")
                     .font(.title.weight(.bold))
                 Text(supportsOnDevicePairing
-                     ? "Locus needs a one-time pairing so it can set your location. You’ll confirm a short code in Settings."
-                     : "Import a pairing file from your computer — Locus uses it to set your location securely on this device.")
+                     ? "SpoofIt! needs a one-time pairing so it can set your location. You’ll confirm a short code in Settings."
+                     : "Import a pairing file from your computer — SpoofIt! uses it to set your location securely on this device.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)

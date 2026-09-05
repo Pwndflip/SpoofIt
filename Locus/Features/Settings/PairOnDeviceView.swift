@@ -77,7 +77,7 @@ struct PairOnDeviceView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("No computer needed")
                 .font(.title2.weight(.bold))
-            Text("Locus advertises a pairable host. iOS connects from Developer Mode, then Locus shows a 6-digit code for you to type.")
+            Text("SpoofIt! advertises a pairable host. iOS connects from Developer Mode, then SpoofIt! shows a 6-digit code for you to type.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }

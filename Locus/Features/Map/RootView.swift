@@ -26,7 +26,7 @@ struct RootView: View {
         .sheet(isPresented: $showPlaces) {
             PlacesView()
         }
-        .alert("Locus", isPresented: Binding(
+        .alert("SpoofIt!", isPresented: Binding(
             get: { session.lastError != nil },
             set: { if !$0 { session.lastError = nil } }
         )) {
@@ -237,12 +237,12 @@ struct BottomControlsView: View {
                 } else {
                     Button {
                         guard let pin = session.pin else {
-                            session.lastError = "Tap the map to drop a pin first."
+                            session.lastError = "Choose a location or tap the map to set a pin first."
                             return
                         }
                         session.teleport(to: pin, pairing: pairing)
                     } label: {
-                        Text("Teleport")
+                        Text("Spoof It!")
                             .font(.subheadline.weight(.bold))
                             .foregroundStyle(.black)
                             .frame(minWidth: 96)

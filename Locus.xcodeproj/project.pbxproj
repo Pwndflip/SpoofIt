@@ -219,7 +219,7 @@
 /* Begin PBXNativeTarget section */
 		4896638691C4AFF8C4B6701D /* Locus */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 499F5785D4491853643B4C0D /* Build configuration list for PBXNativeTarget "Locus" */;
+			buildConfigurationList = 499F5785D4491853643B4C0D /* Build configuration list for PBXNativeTarget "SpoofIt" */;
 			buildPhases = (
 				3D126E6D0964BF8D319384BC /* Sources */,
 				DD475AF090311C77FAF727EA /* Resources */,
@@ -228,10 +228,10 @@
 			);
 			dependencies = (
 			);
-			name = Locus;
+			name = SpoofIt;
 			packageProductDependencies = (
 			);
-			productName = Locus;
+			productName = SpoofIt;
 			productReference = AEFB9A10F8784355D5344D95 /* Locus.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -250,7 +250,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E114DA24E8222F8A31A01840 /* Build configuration list for PBXProject "Locus" */;
+			buildConfigurationList = E114DA24E8222F8A31A01840 /* Build configuration list for PBXProject "SpoofIt" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -404,8 +404,8 @@
 					"-lc++",
 					"-lz",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chrismack.locus;
-				PRODUCT_NAME = Locus;
+				PRODUCT_BUNDLE_IDENTIFIER = com.emir.spoofit;
+				PRODUCT_NAME = SpoofIt!;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Vendor/idevice";
@@ -510,8 +510,8 @@
 					"-lc++",
 					"-lz",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chrismack.locus;
-				PRODUCT_NAME = Locus;
+				PRODUCT_BUNDLE_IDENTIFIER = com.emir.spoofit;
+				PRODUCT_NAME = SpoofIt!;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Vendor/idevice";
@@ -523,7 +523,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		499F5785D4491853643B4C0D /* Build configuration list for PBXNativeTarget "Locus" */ = {
+		499F5785D4491853643B4C0D /* Build configuration list for PBXNativeTarget "SpoofIt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EC219525ECF2D2F87B9312BB /* Debug */,
@@ -532,7 +532,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		E114DA24E8222F8A31A01840 /* Build configuration list for PBXProject "Locus" */ = {
+		E114DA24E8222F8A31A01840 /* Build configuration list for PBXProject "SpoofIt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				99E7112DC3789C83E2A09317 /* Debug */,

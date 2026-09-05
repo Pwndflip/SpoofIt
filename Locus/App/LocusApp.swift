@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct LocusApp: App {
+struct SpoofItApp: App {
     @StateObject private var session = SpoofSession()
     @StateObject private var pairing = PairingStore()
     @AppStorage(SetupGate.defaultsKey) private var setupComplete = false

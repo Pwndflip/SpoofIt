@@ -1,0 +1,42 @@
+name: Build Gebrandete IPA
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+    - name: Code auschecken
+      uses: actions/checkout@v4
+
+    - name: XcodeGen installieren
+      run: brew install xcodegen
+
+    - name: Xcode Projekt generieren
+      run: xcodegen generate
+
+    - name: App kompilieren (.app)
+      run: |
+        xcodebuild -project Locus.xcodeproj \
+          -scheme Locus \
+          -configuration Release \
+          -sdk iphoneos \
+          -derivedDataPath build \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+
+    - name: In .ipa verpacken
+      run: |
+        mkdir -p Payload
+        cp -r build/Build/Products/Release-iphoneos/*.app Payload/
+        zip -r SpoofIt.ipa Payload
+
+    - name: IPA als Download bereitstellen
+      uses: actions/upload-artifact@v4
+      with:
+        name: SpoofIt-IPA
+        path: SpoofIt.ipa
