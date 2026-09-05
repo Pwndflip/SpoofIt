@@ -19,8 +19,8 @@ jobs:
     - name: Altes Projekt aufräumen
       run: rm -rf *.xcodeproj
 
-    - name: Xcode Projekt neu generieren
-      run: xcodegen generate
+    - name: Xcode Projekt neu generieren (Xcode 15 Format erzwingen)
+      run: xcodegen generate --spec project.yml --project-version 56
 
     - name: App kompilieren (.app)
       run: |
