@@ -19,8 +19,12 @@ jobs:
     - name: Altes Projekt aufräumen
       run: rm -rf *.xcodeproj
 
-    - name: Xcode Projekt neu generieren
+    - name: Xcode Projekt generieren
       run: xcodegen generate
+
+    - name: Xcode Projekt-Format auf Version 56 (Xcode 15) forcieren
+      run: |
+        sed -i '' 's/objectVersion = 77;/objectVersion = 56;/g' SpoofIt.xcodeproj/project.pbxproj
 
     - name: App kompilieren (.app)
       run: |
