@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: macos-14
+    
     steps:
     - name: Code auschecken
       uses: actions/checkout@v4
@@ -15,13 +16,16 @@ jobs:
     - name: XcodeGen installieren
       run: brew install xcodegen
 
-    - name: Xcode Projekt generieren
+    - name: Altes Projekt aufräumen
+      run: rm -rf *.xcodeproj
+
+    - name: Xcode Projekt neu generieren
       run: xcodegen generate
 
     - name: App kompilieren (.app)
       run: |
-        xcodebuild -project Locus.xcodeproj \
-          -scheme Locus \
+        xcodebuild -project SpoofIt.xcodeproj \
+          -scheme SpoofIt \
           -configuration Release \
           -sdk iphoneos \
           -derivedDataPath build \
