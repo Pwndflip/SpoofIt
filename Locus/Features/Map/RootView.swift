@@ -160,6 +160,7 @@ struct BottomControlsView: View {
     @EnvironmentObject private var pairing: PairingStore
     @Binding var showSettings: Bool
     @Binding var showPlaces: Bool
+    @State private var showSpeedPicker = false
 
     private let trayShape = RoundedRectangle(cornerRadius: 28, style: .continuous)
 
@@ -178,6 +179,9 @@ struct BottomControlsView: View {
                     let selected = session.travelMode == mode
                     Button {
                         session.travelMode = mode
+                        if mode == .custom {
+                            showSpeedPicker = true
+                        }
                     } label: {
                         Image(systemName: mode.icon)
                             .font(.body.weight(.semibold))
@@ -260,6 +264,9 @@ struct BottomControlsView: View {
         .locusGlass(.regular, in: trayShape)
         // Whole tray absorbs taps so near-misses don't fall through to the map.
         .contentShape(trayShape)
+        .sheet(isPresented: $showSpeedPicker) {
+            SpeedPickerSheet(speed: $session.customSpeedKMH)
+        }
     }
 
     private func trayIcon(_ systemName: String, action: @escaping () -> Void) -> some View {
@@ -289,5 +296,71 @@ struct IconButton: View {
         .buttonStyle(.plain)
         .locusGlass(.interactive, in: Circle())
         .foregroundStyle(.primary)
+    }
+}
+
+struct SpeedPickerSheet: View {
+    @Binding var speed: Double
+    @Environment(\.dismiss) private var dismiss
+    
+    let minSpeed = 1.0
+    let maxSpeed = 200.0
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section("Geschwindigkeit") {
+                    HStack(spacing: 12) {
+                        Text("\(Int(speed)) KMH")
+                            .font(.headline)
+                            .frame(width: 60, alignment: .leading)
+                        
+                        Slider(value: $speed, in: minSpeed...maxSpeed, step: 1)
+                            .tint(LocusTheme.accent)
+                    }
+                    .padding(.vertical, 8)
+                }
+                
+                Section("Voreinstellungen") {
+                    let presets = [
+                        ("Fußgänger", 5.0),
+                        ("Jogger", 12.0),
+                        ("Radfahrer", 23.0),
+                        ("Auto", 48.0),
+                        ("Autobahn", 100.0),
+                    ]
+                    
+                    ForEach(presets, id: \.0) { name, kmh in
+                        Button {
+                            speed = kmh
+                        } label: {
+                            HStack {
+                                Text(name)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Text("\(Int(kmh)) KMH")
+                                    .foregroundStyle(.secondary)
+                                    .font(.subheadline)
+                            }
+                        }
+                    }
+                }
+                
+                Section {
+                    Text("Wähle eine benutzerdefinierte Geschwindigkeit oder nutze eine der Voreinstellungen. Die Geschwindigkeit wird in 1 KMH-Schritten angepasst.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .navigationTitle("Geschwindigkeit anpassen")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Fertig") {
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 }

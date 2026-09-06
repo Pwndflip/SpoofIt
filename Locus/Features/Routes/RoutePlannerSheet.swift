@@ -7,8 +7,6 @@ struct RoutePlannerSheet: View {
     @Binding var isRouting: Bool
     var onBuild: () -> Void
     var onPlay: () -> Void
-    var onImportGPX: () -> Void
-    var onExportGPX: () -> Void
     var onUseDrawn: () -> Void
 
     @EnvironmentObject private var session: SpoofSession
@@ -42,7 +40,7 @@ struct RoutePlannerSheet: View {
                     .disabled(isRouting)
                 }
 
-                Section("Abspielen / Zeichnen / GPX") {
+                Section("Abspielen / Zeichnen") {
                     Button {
                         onUseDrawn()
                     } label: {
@@ -50,12 +48,6 @@ struct RoutePlannerSheet: View {
                     }
                     Button(action: onPlay) {
                         Label("Route abspielen", systemImage: "play.fill")
-                    }
-                    Button(action: onImportGPX) {
-                        Label("GPX importieren", systemImage: "square.and.arrow.down")
-                    }
-                    Button(action: onExportGPX) {
-                        Label("GPX exportieren", systemImage: "square.and.arrow.up")
                     }
                 }
 

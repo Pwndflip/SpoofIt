@@ -5,7 +5,7 @@ import UIKit
 import UserNotifications
 
 enum TravelMode: String, CaseIterable, Identifiable {
-    case walk, run, cycle, drive
+    case walk, run, cycle, drive, custom
 
     var id: String { rawValue }
 
@@ -15,6 +15,7 @@ enum TravelMode: String, CaseIterable, Identifiable {
         case .run: return "Laufen"
         case .cycle: return "Radfahren"
         case .drive: return "Fahren"
+        case .custom: return "Benutzerdefiniert"
         }
     }
 
@@ -24,6 +25,7 @@ enum TravelMode: String, CaseIterable, Identifiable {
         case .run: return "figure.run"
         case .cycle: return "bicycle"
         case .drive: return "car.fill"
+        case .custom: return "slider.horizontal.3"
         }
     }
 
@@ -34,13 +36,14 @@ enum TravelMode: String, CaseIterable, Identifiable {
         case .run: return 3.3
         case .cycle: return 6.5
         case .drive: return 13.4
+        case .custom: return 0 // Will be overridden by customSpeed
         }
     }
 
     var mkTransportType: MKDirectionsTransportType {
         switch self {
         case .walk, .run: return .walking
-        case .cycle, .drive: return .automobile
+        case .cycle, .drive, .custom: return .automobile
         }
     }
 }
@@ -74,6 +77,7 @@ final class SpoofSession: ObservableObject {
     @Published var pin: CLLocationCoordinate2D?
     @Published var simulated: CLLocationCoordinate2D?
     @Published var travelMode: TravelMode = .walk
+    @Published var customSpeedKMH: Double = 20.0  // Custom speed in KMH (1-200)
     @Published var mapStyleIndex: Int = 0
     @Published var lastError: String?
     @Published var isBusy = false
@@ -185,6 +189,7 @@ final class SpoofSession: ObservableObject {
         routeTask?.cancel()
         stopJoystick()
         let mode = travelMode
+        let baseSpeed = getEffectiveBaseSpeed()
         routeTask = Task { [weak self] in
             guard let self else { return }
             var previous = coordinates[0]
@@ -195,7 +200,7 @@ final class SpoofSession: ObservableObject {
                 if Task.isCancelled { break }
                 let distance = CLLocation(latitude: previous.latitude, longitude: previous.longitude)
                     .distance(from: CLLocation(latitude: next.latitude, longitude: next.longitude))
-                var speed = mode.baseSpeed * Double.random(in: 0.88...1.12)
+                var speed = baseSpeed * Double.random(in: 0.88...1.12)
                 speed = max(0.8, speed)
                 let stepMeters: CLLocationDistance = min(12, max(4, speed * 0.5))
                 let steps = max(1, Int(ceil(distance / stepMeters)))
@@ -274,6 +279,15 @@ final class SpoofSession: ObservableObject {
         String(format: "%.5f, %.5f", coordinate.latitude, coordinate.longitude)
     }
 
+    /// Get effective base speed in meters per second for current travel mode
+    private func getEffectiveBaseSpeed() -> CLLocationSpeed {
+        if travelMode == .custom {
+            // Convert KMH to m/s: KMH / 3.6 = m/s
+            return customSpeedKMH / 3.6
+        }
+        return travelMode.baseSpeed
+    }
+
     private static func isGenericFavoriteName(_ name: String) -> Bool {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty || trimmed == "Favorite" { return true }
@@ -329,7 +343,7 @@ final class SpoofSession: ObservableObject {
         guard magnitude > 0.08 else { return }
         let nx = joystickVector.dx / magnitude
         let ny = -joystickVector.dy / magnitude
-        let speed = travelMode.baseSpeed * min(1.0, magnitude) * Double.random(in: 0.9...1.1)
+        let speed = getEffectiveBaseSpeed() * min(1.0, magnitude) * Double.random(in: 0.9...1.1)
         let dt = 0.25
         let meters = speed * dt
         let next = offset(coordinate: current, eastMeters: nx * meters, northMeters: ny * meters)

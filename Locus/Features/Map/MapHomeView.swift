@@ -14,7 +14,6 @@ struct MapHomeView: View {
     @State private var routeCoords: [CLLocationCoordinate2D] = []
     @State private var isRouting = false
     @State private var showRouteSheet = false
-    @State private var showGPXImporter = false
     @State private var drawnPath: [CLLocationCoordinate2D] = []
     @State private var drawMode = false
     @State private var pinSelected = false
@@ -122,15 +121,6 @@ struct MapHomeView: View {
         .onChange(of: session.pin?.latitude) { _, newValue in
             if newValue == nil { pinSelected = false }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .locusImportGPX)) { note in
-            guard let url = note.object as? URL else { return }
-            importGPX(url)
-        }
-        .fileImporter(isPresented: $showGPXImporter, allowedContentTypes: [.xml, .data], allowsMultipleSelection: false) { result in
-            if case .success(let urls) = result, let url = urls.first {
-                importGPX(url)
-            }
-        }
         .sheet(isPresented: $showRouteSheet) {
             RoutePlannerSheet(
                 start: $routeStart,
@@ -138,8 +128,6 @@ struct MapHomeView: View {
                 isRouting: $isRouting,
                 onBuild: buildRoadRoute,
                 onPlay: playRoute,
-                onImportGPX: { showGPXImporter = true },
-                onExportGPX: exportGPX,
                 onUseDrawn: {
                     routeCoords = RouteBuilder.sample(coordinates: drawnPath, every: 10)
                     drawnPath.removeAll()
@@ -385,39 +373,6 @@ struct MapHomeView: View {
         }
         showRouteSheet = false
         session.followRoute(path, pairing: pairing)
-    }
-
-    private func importGPX(_ url: URL) {
-        do {
-            let coords = try GPXCodec.parse(url)
-            routeCoords = RouteBuilder.sample(coordinates: coords, every: 10)
-            if let first = coords.first {
-                session.pin = first
-                position = .region(MKCoordinateRegion(center: first, latitudinalMeters: 2000, longitudinalMeters: 2000))
-            }
-        } catch {
-            session.lastError = error.localizedDescription
-        }
-    }
-
-    private func exportGPX() {
-        let path = routeCoords.isEmpty ? drawnPath : routeCoords
-        guard !path.isEmpty else {
-            session.lastError = "Es gibt nichts zu exportieren."
-            return
-        }
-        let gpx = GPXCodec.export(path)
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Locus-Route.gpx")
-        do {
-            try gpx.data(using: .utf8)?.write(to: url)
-            let av = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let root = scene.keyWindow?.rootViewController {
-                root.present(av, animated: true)
-            }
-        } catch {
-            session.lastError = error.localizedDescription
-        }
     }
 }
 

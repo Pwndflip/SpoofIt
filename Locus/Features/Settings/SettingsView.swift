@@ -8,7 +8,6 @@ struct SettingsView: View {
 
     @State private var showImporter = false
     @State private var showPairOnDevice = false
-    @State private var showNameEasterEgg = false
     @State private var tunnelIP = TunnelConfig.targetIP
     @State private var localDevVPNInstalled = LocalDevVPN.isInstalled
     @Environment(\.scenePhase) private var scenePhase
@@ -105,35 +104,11 @@ struct SettingsView: View {
                 Section("Über") {
                     LabeledContent("Version", value: appVersion)
                     LabeledContent("Engine", value: "idevice-DVT-Ortssimulation")
-                        Text("SpoofIt! wurde für Emir gemacht. Die App ist kostenlos und Open Source (MIT); die Standortsimulation wird vom idevice-FFI bereitgestellt.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-
-                Section {
-                    Button {
-                        showNameEasterEgg = true
-                    } label: {
-                        Text("locus, Substantiv — ein Ort. Aus dem Lateinischen für „wo du bist“.")
-                            .font(.footnote.italic())
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 4)
-                    }
-                    .buttonStyle(.plain)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-
                     Text("Gemacht von Emir, für leute wie Emir.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 8)
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
                 }
+
             }
             .navigationTitle("Einstellungen")
             .toolbar {
@@ -161,9 +136,6 @@ struct SettingsView: View {
             .sheet(isPresented: $showPairOnDevice) {
                 PairOnDeviceView()
                     .environmentObject(pairing)
-            }
-            .fullScreenCover(isPresented: $showNameEasterEgg) {
-                LocusEasterEggView()
             }
             .onAppear {
                 localDevVPNInstalled = LocalDevVPN.isInstalled

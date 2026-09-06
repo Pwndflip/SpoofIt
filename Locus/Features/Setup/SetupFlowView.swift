@@ -186,7 +186,7 @@ struct SetupFlowView: View {
                         .font(.system(size: 48, weight: .bold, design: .rounded))
                         .tracking(-0.5)
 
-                    Text("Dein Standort, dein Weg.\nGemacht für Emir.")
+                    Text("Dein Standort, dein Weg.\nGemacht von Emir, für leute wie Emir.")
                         .font(.title3)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)

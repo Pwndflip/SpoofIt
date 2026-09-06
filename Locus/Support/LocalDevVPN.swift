@@ -1,5 +1,6 @@
 import Darwin
 import Foundation
+import Network
 import UIKit
 
 enum LocalDevVPN {
@@ -14,15 +15,24 @@ enum LocalDevVPN {
     }
 
     /// LocalDevVPN puts the tunnel network on a `10.7.0.x` (or custom) utun when connected.
+    /// Uses multiple detection methods for reliability on WiFi and cellular.
     static var isConnected: Bool {
-        let addresses = ipv4InterfaceAddresses()
         let target = TunnelConfig.targetIP
+        
+        // Method 1: Check interface addresses (primary method)
+        let addresses = ipv4InterfaceAddresses()
         if addresses.contains(target) { return true }
-
+        
         let parts = target.split(separator: ".")
         guard parts.count == 4 else { return false }
         let prefix = parts.dropLast().joined(separator: ".") + "."
-        return addresses.contains { $0.hasPrefix(prefix) }
+        if addresses.contains(where: { $0.hasPrefix(prefix) }) { return true }
+        
+        // Method 2: Check all tunnel-like interfaces (fallback for WiFi issues)
+        if checkTunnelInterfaces(prefix: prefix) { return true }
+        
+        // Method 3: Try to connect to the tunnel IP (as final check)
+        return canReachTunnelIP(target)
     }
 
     static func openInstalled() {
@@ -69,5 +79,70 @@ enum LocalDevVPN {
             ptr = interface.ifa_next
         }
         return results
+    }
+    
+    /// Check all tunnel interfaces (utun*) to handle WiFi detection issues
+    private static func checkTunnelInterfaces(prefix: String) -> Bool {
+        var ifaddr: UnsafeMutablePointer<ifaddrs>?
+        guard getifaddrs(&ifaddr) == 0, let first = ifaddr else { return false }
+        defer { freeifaddrs(ifaddr) }
+
+        var ptr: UnsafeMutablePointer<ifaddrs>? = first
+        while let current = ptr {
+            let interface = current.pointee
+            let interfaceName = String(cString: interface.ifa_name)
+            
+            // Check tunnel interfaces (utun0, utun1, etc.)
+            if interfaceName.starts(with: "utun") && interface.ifa_addr.pointee.sa_family == UInt8(AF_INET) {
+                var host = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                let nameLen = socklen_t(MemoryLayout<sockaddr_in>.size)
+                if getnameinfo(
+                    interface.ifa_addr,
+                    nameLen,
+                    &host,
+                    socklen_t(host.count),
+                    nil,
+                    0,
+                    NI_NUMERICHOST
+                ) == 0 {
+                    let ipAddress = String(cString: host)
+                    if ipAddress.hasPrefix(prefix) {
+                        return true
+                    }
+                }
+            }
+            ptr = interface.ifa_next
+        }
+        return false
+    }
+    
+    /// Attempt to reach the tunnel IP to verify connection
+    private static func canReachTunnelIP(_ ip: String) -> Bool {
+        guard let host = NWEndpoint.Host(ip) else { return false }
+        let endpoint = NWEndpoint.hostPort(host: host, port: 53)
+        let connection = NWConnection(to: endpoint, using: .udp)
+        
+        var isReachable = false
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        connection.stateUpdateHandler = { state in
+            switch state {
+            case .ready, .preparing:
+                isReachable = true
+            case .failed, .cancelled:
+                isReachable = false
+            default:
+                break
+            }
+            semaphore.signal()
+        }
+        
+        connection.start(queue: .global())
+        
+        // Wait up to 100ms for connection state to become clear
+        _ = semaphore.wait(timeout: .now() + 0.1)
+        connection.cancel()
+        
+        return isReachable
     }
 }
