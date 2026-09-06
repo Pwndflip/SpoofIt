@@ -2,18 +2,22 @@ import Foundation
 import Network
 
 enum NetworkPermissionHelper {
-    /// Request local network permission by checking network path
+    /// Request local network permission by creating a local network connection attempt
     /// This triggers the iOS permission prompt for local network access
     static func requestLocalNetworkPermission() {
-        let queue = DispatchQueue(label: "com.chrismack.locus.networkperm")
-        let monitor = NWPathMonitor()
-        
-        // Start monitoring - this will trigger the permission request
-        monitor.start(queue: queue)
-        
-        // Stop monitoring after a short delay since we only need the permission prompt
-        queue.asyncAfter(deadline: .now() + 0.5) {
-            monitor.cancel()
+        // Try creating a connection to trigger permission prompt
+        DispatchQueue.main.async {
+            let parameters = NWParameters.tcp
+            let endpoint = NWEndpoint.hostPort(host: "localhost", port: 5900)
+            let connection = NWConnection(to: endpoint, using: parameters)
+            
+            connection.stateUpdateHandler = { _ in }
+            connection.start(queue: .global())
+            
+            // Stop immediately - we just need to trigger the permission prompt
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) {
+                connection.cancel()
+            }
         }
     }
 }

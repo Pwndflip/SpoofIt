@@ -113,6 +113,8 @@ final class SpoofSession: ObservableObject {
             lastError = "Importiere zuerst eine RPPairing-Datei in den Einstellungen."
             return
         }
+        // Request local network permission before attempting connection
+        NetworkPermissionHelper.requestLocalNetworkPermission()
         pin = coordinate
         apply(coordinate, pairing: pairing, markRecent: true)
     }
@@ -156,6 +158,9 @@ final class SpoofSession: ObservableObject {
             lastError = "Importiere zuerst eine RPPairing-Datei in den Einstellungen."
             return
         }
+        // Request local network permission before attempting connection
+        NetworkPermissionHelper.requestLocalNetworkPermission()
+        
         let start = simulated ?? pin ?? locationKeeper.lastKnownCoordinate
         guard let start else {
             lastError = "Setze einen Pin oder teleportiere dich zuerst an einen Ort, bevor du den Joystick verwendest."
@@ -186,6 +191,9 @@ final class SpoofSession: ObservableObject {
 
     func followRoute(_ coordinates: [CLLocationCoordinate2D], pairing: PairingStore) {
         guard pairing.hasPairingFile, coordinates.count >= 2 else { return }
+        // Request local network permission before attempting connection
+        NetworkPermissionHelper.requestLocalNetworkPermission()
+        
         routeTask?.cancel()
         stopJoystick()
         let mode = travelMode
