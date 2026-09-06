@@ -118,7 +118,7 @@ enum LocalDevVPN {
     
     /// Attempt to reach the tunnel IP to verify connection
     private static func canReachTunnelIP(_ ip: String) -> Bool {
-        guard let host = NWEndpoint.Host(ip) else { return false }
+        let host = NWEndpoint.Host(ip)
         let endpoint = NWEndpoint.hostPort(host: host, port: 53)
         let connection = NWConnection(to: endpoint, using: .udp)
         
