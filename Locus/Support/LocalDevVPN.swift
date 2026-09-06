@@ -28,8 +28,8 @@ enum LocalDevVPN {
         let prefix = parts.dropLast().joined(separator: ".") + "."
         if addresses.contains(where: { $0.hasPrefix(prefix) }) { return true }
         
-        // Method 3: Check all tunnel-like interfaces directly
-        return checkTunnelInterfaces(prefix: prefix)
+        // Method 3: Check if any tunnel interface exists (utun*) - indicates LocalDevVPN is active
+        return hasTunnelInterface()
     }
 
     static func openInstalled() {
@@ -78,37 +78,21 @@ enum LocalDevVPN {
         return results
     }
     
-    /// Check all tunnel interfaces (utun*) to handle WiFi detection issues
-    private static func checkTunnelInterfaces(prefix: String) -> Bool {
+    /// Check if any tunnel interface (utun*) exists
+    /// This indicates LocalDevVPN is active, even if getnameinfo fails
+    private static func hasTunnelInterface() -> Bool {
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
         guard getifaddrs(&ifaddr) == 0, let first = ifaddr else { return false }
         defer { freeifaddrs(ifaddr) }
 
         var ptr: UnsafeMutablePointer<ifaddrs>? = first
         while let current = ptr {
-            let interface = current.pointee
-            let interfaceName = String(cString: interface.ifa_name)
-            
-            // Check tunnel interfaces (utun0, utun1, etc.)
-            if interfaceName.starts(with: "utun") && interface.ifa_addr.pointee.sa_family == UInt8(AF_INET) {
-                var host = [CChar](repeating: 0, count: Int(NI_MAXHOST))
-                let nameLen = socklen_t(MemoryLayout<sockaddr_in>.size)
-                if getnameinfo(
-                    interface.ifa_addr,
-                    nameLen,
-                    &host,
-                    socklen_t(host.count),
-                    nil,
-                    0,
-                    NI_NUMERICHOST
-                ) == 0 {
-                    let ipAddress = String(cString: host)
-                    if ipAddress.hasPrefix(prefix) {
-                        return true
-                    }
-                }
+            let interfaceName = String(cString: current.pointee.ifa_name)
+            // Any utun interface indicates LocalDevVPN tunnel is present
+            if interfaceName.starts(with: "utun") {
+                return true
             }
-            ptr = interface.ifa_next
+            ptr = current.pointee.ifa_next
         }
         return false
     }
