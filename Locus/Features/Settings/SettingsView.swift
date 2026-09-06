@@ -104,10 +104,29 @@ struct SettingsView: View {
                 Section("Über") {
                     LabeledContent("Version", value: appVersion)
                     LabeledContent("Engine", value: "idevice-DVT-Ortssimulation")
+                }
+
+                Section {
                     Text("Gemacht von Emir, für leute wie Emir.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                        .padding(.vertical, 8)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    
+                    Text("Fenerbahçe ❤️")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                        .padding(.vertical, 4)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                 }
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
 
             }
             .navigationTitle("Einstellungen")

@@ -1,6 +1,5 @@
 import Darwin
 import Foundation
-import Network
 import UIKit
 
 enum LocalDevVPN {
@@ -15,24 +14,22 @@ enum LocalDevVPN {
     }
 
     /// LocalDevVPN puts the tunnel network on a `10.7.0.x` (or custom) utun when connected.
-    /// Uses multiple detection methods for reliability on WiFi and cellular.
+    /// Uses interface enumeration to check for tunnel presence.
     static var isConnected: Bool {
         let target = TunnelConfig.targetIP
         
-        // Method 1: Check interface addresses (primary method)
+        // Method 1: Check if target IP is in active interfaces
         let addresses = ipv4InterfaceAddresses()
         if addresses.contains(target) { return true }
         
+        // Method 2: Check if any address in same subnet (e.g., 10.7.0.x matches 10.7.0.1)
         let parts = target.split(separator: ".")
         guard parts.count == 4 else { return false }
         let prefix = parts.dropLast().joined(separator: ".") + "."
         if addresses.contains(where: { $0.hasPrefix(prefix) }) { return true }
         
-        // Method 2: Check all tunnel-like interfaces (fallback for WiFi issues)
-        if checkTunnelInterfaces(prefix: prefix) { return true }
-        
-        // Method 3: Try to connect to the tunnel IP (as final check)
-        return canReachTunnelIP(target)
+        // Method 3: Check all tunnel-like interfaces directly
+        return checkTunnelInterfaces(prefix: prefix)
     }
 
     static func openInstalled() {
@@ -114,35 +111,5 @@ enum LocalDevVPN {
             ptr = interface.ifa_next
         }
         return false
-    }
-    
-    /// Attempt to reach the tunnel IP to verify connection
-    private static func canReachTunnelIP(_ ip: String) -> Bool {
-        let host = NWEndpoint.Host(ip)
-        let endpoint = NWEndpoint.hostPort(host: host, port: 53)
-        let connection = NWConnection(to: endpoint, using: .udp)
-        
-        var isReachable = false
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        connection.stateUpdateHandler = { state in
-            switch state {
-            case .ready, .preparing:
-                isReachable = true
-            case .failed, .cancelled:
-                isReachable = false
-            default:
-                break
-            }
-            semaphore.signal()
-        }
-        
-        connection.start(queue: .global())
-        
-        // Wait up to 100ms for connection state to become clear
-        _ = semaphore.wait(timeout: .now() + 0.1)
-        connection.cancel()
-        
-        return isReachable
     }
 }
