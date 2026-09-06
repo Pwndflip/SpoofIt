@@ -15,7 +15,7 @@ enum LocationEngineError: LocalizedError {
         switch self {
         case .invalidIP: return "Die Tunnel-IP ist ungültig. Prüfe Einstellungen → Tunnel → IP (normalerweise 10.7.0.1)."
         case .pairingRead: return "Die RPPairing-Datei konnte nicht gelesen werden. Erstelle eine mit idevice_pair im RPPairing-Modus."
-        case .tunnelCreate: return "Der Entwicklertunnel konnte nicht geöffnet werden. Ist LocalDevVPN im WLAN verbunden?"
+        case .tunnelCreate: return "Kann nicht mit LocalDevVPN verbinden. Stelle sicher: 1) LocalDevVPN ist auf dem iPhone aktiv, 2) Beide Geräte sind im gleichen WLAN, 3) Netzwerk-Berechtigung wurde gewährt."
         case .remoteServer: return "Mit dem Tunnel verbunden, aber der RemoteXPC-Handshake ist fehlgeschlagen."
         case .simulationCreate: return "Apples Dienst für die Ortssimulation konnte nicht geöffnet werden."
         case .locationSet: return "Die simulierten Koordinaten konnten nicht gesetzt werden."

@@ -30,6 +30,9 @@ struct SpoofItApp: App {
                 handleIncoming(url)
             }
             .onAppear {
+                // Request local network permission for idevice tunnel
+                NetworkPermissionHelper.requestLocalNetworkPermission()
+                
                 if !setupComplete, pairing.hasPairingFile, !SetupGate.isInProgress {
                     SetupGate.markComplete()
                     setupComplete = true
